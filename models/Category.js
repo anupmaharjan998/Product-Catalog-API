@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 
+/**
+ * Category Schema
+ * @description Schema definition for Category model
+ */
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please add a name'],
+        required: [true, 'Category name is required'],
         unique: true,
         trim: true
     },
@@ -11,9 +15,9 @@ const categorySchema = new mongoose.Schema({
         type: String,
         default: '',
         trim: true
-    }},
-    {
-    timestamp: true
+    }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Category', categorySchema);
