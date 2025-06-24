@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
+const {v4: uuidv4} = require('uuid');
 
-/**
- * Category Schema
- * @description Schema definition for Category model
- */
 const categorySchema = new mongoose.Schema({
+    categoryId: {
+        type: String,
+        default: uuidv4,
+        unique: true
+    },
     name: {
         type: String,
         required: [true, 'Category name is required'],
