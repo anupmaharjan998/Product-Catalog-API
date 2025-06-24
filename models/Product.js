@@ -1,9 +1,16 @@
 const mongoose = require('mongoose');
+const {v4: uuidv4} = require('uuid');
 
-const productSchema = mongoose.Schema({
+const productSchema = new mongoose.Schema({
+    productId: {
+        type: String,
+        default: uuidv4,
+        unique: true
+    },
+
     name: {
         type: String,
-        required: [true, 'Please add a name'],
+        required: [true, 'Product name is required'],
         unique: true,
         trim: true
     },
@@ -17,14 +24,19 @@ const productSchema = mongoose.Schema({
         required: [true, 'Product price is required'],
         min: [0, 'Price must be non-negative']
     },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
+    categoryId: {
+        type: String,
         ref: 'Category',
-        required: true
+        required: [true, 'Product category is required']
     },
     inStock: {
         type: Boolean,
         default: true
+    },
+    stockQuantity: {
+        type: Number,
+        default: 0,
+        min: 0
     }
 }, {
     timestamps: true
