@@ -4,9 +4,9 @@ const {
     createCategory,
     getAllCategories,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    searchCategory
 } = require('../controllers/categoryController');
-
 
 // Create a new category
 router.post('/', createCategory);
@@ -19,5 +19,7 @@ router.put('/:id', updateCategory);
 
 // Delete a category by ID
 router.delete('/:id', deleteCategory);
+
+router.post('/filter', searchCategory);
 
 module.exports = router;

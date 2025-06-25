@@ -1,6 +1,5 @@
 const Category = require('../models/Category');
-
-
+require("../models/Product");
 // Create a new category
 exports.createCategory = async (req, res) => {
     try {
@@ -86,5 +85,22 @@ exports.deleteCategory = async (req, res) => {
             success: false,
             error: error.message
         });
+    }
+};
+
+
+exports.searchCategory = async (req, res) => {
+    const filters = req.body;
+    const searchFilters = {};
+    try {
+        if (filters.name) {
+            searchFilters.name = { $regex: filters.name, $options: 'i' };
+        }
+
+        const results = await Category.find(searchFilters);
+
+        return res.json({success: true, count: results.length, data: results});
+    } catch (err) {
+        return res.status(500).json({success: false, error: err.message});
     }
 };
