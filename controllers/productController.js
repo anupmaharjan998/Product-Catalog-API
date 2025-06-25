@@ -131,23 +131,19 @@ exports.searchProducts = async (req, res) => {
     const searchFilters = {};
     try {
         if (filters.name) {
-            searchFilters.name = { $regex: filters.q, $options: 'i' };
+            searchFilters.name = { $regex: filters.name, $options: 'i' };
         }
 
-
-        // Filter by category
         if (filters.categoryId) {
             searchFilters.categoryId = filters.categoryId;
         }
 
-        // Filter by price range
         if (filters.minPrice || filters.maxPrice) {
             searchFilters.price = {};
             if (filters.minPrice) searchFilters.price.$gte = Number(filters.minPrice);
             if (filters.maxPrice) searchFilters.price.$lte = Number(filters.maxPrice);
         }
 
-        // Filter by stock availability
         if (filters.inStock !== undefined) {
             searchFilters.inStock = filters.inStock;
         }
