@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 
 // Load .env
 dotenv.config();
@@ -41,7 +40,7 @@ const connectDB = async () => {
         process.exit(1);
     }
 };
-await connectDB();
+connectDB();
 
 // Mount routes
 const categoryRoutes = require('./routes/categoryRoutes');
