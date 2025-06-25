@@ -124,3 +124,43 @@ exports.deleteProduct = async (req, res) => {
         });
     }
 };
+
+
+exports.searchProducts = async (req, res) => {
+    const filters = req.body;
+    const searchFilters = {};
+    try {
+        if (filters.name) {
+            searchFilters.name = { $regex: filters.q, $options: 'i' };
+        }
+
+
+        // Filter by category
+        if (filters.categoryId) {
+            searchFilters.categoryId = filters.categoryId;
+        }
+
+        // Filter by price range
+        if (filters.minPrice || filters.maxPrice) {
+            searchFilters.price = {};
+            if (filters.minPrice) searchFilters.price.$gte = Number(filters.minPrice);
+            if (filters.maxPrice) searchFilters.price.$lte = Number(filters.maxPrice);
+        }
+
+        // Filter by stock availability
+        if (filters.inStock !== undefined) {
+            searchFilters.inStock = filters.inStock;
+        }
+
+        const results = await Product.find(searchFilters).populate({
+            path: 'categoryId',
+            model: 'Category',
+            localField: 'categoryId',
+            foreignField: 'categoryId',
+            justOne: true
+        });
+        return res.json({success: true, count: results.length, data: results});
+    } catch (err) {
+        return res.status(500).json({success: false, error: err.message});
+    }
+};
