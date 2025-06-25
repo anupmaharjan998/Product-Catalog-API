@@ -7,7 +7,8 @@ const {
     deleteProduct,
     searchProducts
 } = require('../controllers/productController');
-
+const {protect} = require("../auth/auth");
+router.use(protect);
 
 router.route('/')
     .post(createProduct)
