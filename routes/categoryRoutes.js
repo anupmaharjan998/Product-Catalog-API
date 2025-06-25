@@ -4,20 +4,20 @@ const {
     createCategory,
     getAllCategories,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    searchCategory
 } = require('../controllers/categoryController');
+const { protect } = require('../auth/auth');
+router.use(protect);
 
+router.route('/')
+    .post(createCategory)
+    .get(getAllCategories);
 
-// Create a new category
-router.post('/', createCategory);
+router.route('/:categoryId')
+    .put(updateCategory)
+    .delete(deleteCategory);
 
-// Get all categories
-router.get('/', getAllCategories);
-
-// Update a category by ID
-router.put('/:id', updateCategory);
-
-// Delete a category by ID
-router.delete('/:id', deleteCategory);
+router.post('/filter', searchCategory);
 
 module.exports = router;

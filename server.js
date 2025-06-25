@@ -45,8 +45,10 @@ connectDB();
 // Mount routes
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
+const authRoutes = require('./routes/authRoutes');
 app.use('/api/categories', categoryRoutes);
 app.use('/api/product', productRoutes);
+app.use('/api/auth', authRoutes);
 
 // Root route
 app.get('/', (req, res) => {

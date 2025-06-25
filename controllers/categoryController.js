@@ -1,5 +1,5 @@
 const Category = require('../models/Category');
-
+const Product = require("../models/Product");
 
 // Create a new category
 exports.createCategory = async (req, res) => {
@@ -36,23 +36,27 @@ exports.getAllCategories = async (req, res) => {
 
 // Update an existing category
 exports.updateCategory = async (req, res) => {
+    const {categoryId} = req.params;
+    const updateData = req.body;
+
     try {
-        const category = await Category.findByIdAndUpdate(
-            req.params.id, 
-            req.body, 
+
+        const category = await Category.findOneAndUpdate(
+            {categoryId},
+            updateData,
             {
                 new: true,
-                runValidators: true
+                runValidators: true,
+                lean: true
             }
         );
 
         if (!category) {
-            return res.status(404).json({
+            return res.status(400).json({
                 success: false,
                 error: 'Category not found'
             });
         }
-
         return res.status(200).json({
             success: true,
             data: category
@@ -67,8 +71,9 @@ exports.updateCategory = async (req, res) => {
 
 // Delete a category
 exports.deleteCategory = async (req, res) => {
+    const {categoryId} = req.params;
     try {
-        const category = await Category.findByIdAndDelete(req.params.id);
+        const category = await Category.findOneAndDelete({categoryId});
 
         if (!category) {
             return res.status(404).json({
@@ -86,5 +91,21 @@ exports.deleteCategory = async (req, res) => {
             success: false,
             error: error.message
         });
+    }
+};
+
+exports.searchCategory = async (req, res) => {
+    const filters = req.body;
+    const searchFilters = {};
+    try {
+        if (filters.name) {
+            searchFilters.name = { $regex: filters.name, $options: 'i' };
+        }
+
+        const results = await Category.find(searchFilters);
+
+        return res.json({success: true, count: results.length, data: results});
+    } catch (err) {
+        return res.status(500).json({success: false, error: err.message});
     }
 };
