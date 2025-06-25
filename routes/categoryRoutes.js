@@ -8,17 +8,13 @@ const {
     searchCategory
 } = require('../controllers/categoryController');
 
-// Create a new category
-router.post('/', createCategory);
+router.route('/')
+    .post(createCategory)
+    .get(getAllCategories);
 
-// Get all categories
-router.get('/', getAllCategories);
-
-// Update a category by ID
-router.put('/:id', updateCategory);
-
-// Delete a category by ID
-router.delete('/:id', deleteCategory);
+router.route('/:categoryId')
+    .put(updateCategory)
+    .delete(deleteCategory);
 
 router.post('/filter', searchCategory);
 
