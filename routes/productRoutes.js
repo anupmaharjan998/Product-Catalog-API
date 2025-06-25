@@ -4,7 +4,8 @@ const {
     createProduct,
     getAllProducts,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    searchProducts
 } = require('../controllers/productController');
 
 
@@ -15,5 +16,7 @@ router.route('/')
 router.route('/:productId')
     .put(updateProduct)
     .delete(deleteProduct);
+
+router.post('/filter', searchProducts);
 
 module.exports = router;
