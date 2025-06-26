@@ -7,7 +7,7 @@ const {
     deleteCategory,
     searchCategory
 } = require('../controllers/categoryController');
-const { protect } = require('../auth/auth');
+const { protect } = require('../middleware/auth');
 router.use(protect);
 
 router.route('/')

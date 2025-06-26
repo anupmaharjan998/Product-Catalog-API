@@ -4,8 +4,9 @@ const Category = require('../models/Category');
 
 // Create a new product
 exports.createProduct = async (req, res) => {
+    const data = req.body;
     try {
-        const categoryExists = await Category.exists({categoryId: req.body.categoryId});
+        const categoryExists = await Category.exists({categoryId: data.categoryId});
         if (!categoryExists) {
             return res.status(400).json({
                 success: false,
@@ -13,7 +14,11 @@ exports.createProduct = async (req, res) => {
             });
         }
 
-        const existingProduct = await Product.findOne({name: req.body.name});
+        if (!data.file){
+            data.image = req.file.path;
+        }
+
+        const existingProduct = await Product.findOne({name: data.name});
         if (existingProduct) {
             return res.status(400).json({
                 success: false,
@@ -21,7 +26,7 @@ exports.createProduct = async (req, res) => {
             });
         }
 
-        const product = await Product.create(req.body);
+        const product = await Product.create(data);
 
         return res.status(201).json({
             success: true,
@@ -40,13 +45,25 @@ exports.createProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await Product.find().populate({
-            path: 'category',
+            path: 'categoryId',
+            model: 'Category',
+            localField: 'categoryId',       // from Product
+            foreignField: 'categoryId',     // from Category
+            justOne: true,
             select: 'categoryId name description'
         });
+
+        // Append base URL to image paths
+        const host = `${req.protocol}://${req.get('host')}`;
+        const enrichedProducts = products.map(p => ({
+            ...p.toObject(),
+            image: p.image ? `${host}/${p.image}` : null
+        }));
+
         return res.status(200).json({
             success: true,
-            count: products.length,
-            data: products
+            count: enrichedProducts.length,
+            data: enrichedProducts
         });
     } catch (error) {
         return res.status(500).json({
