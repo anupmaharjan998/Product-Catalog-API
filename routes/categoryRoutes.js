@@ -7,16 +7,16 @@ const {
     deleteCategory,
     searchCategory
 } = require('../controllers/categoryController');
-const { protect } = require('../middleware/auth');
+const { protect, authorizeRoles } = require('../middleware/auth');
 router.use(protect);
 
 router.route('/')
-    .post(createCategory)
+    .post(authorizeRoles('admin', 'seller'), createCategory)
     .get(getAllCategories);
 
 router.route('/:categoryId')
-    .put(updateCategory)
-    .delete(deleteCategory);
+    .put(authorizeRoles('admin', 'seller'), updateCategory)
+    .delete(authorizeRoles('admin', 'seller'), deleteCategory);
 
 router.post('/filter', searchCategory);
 

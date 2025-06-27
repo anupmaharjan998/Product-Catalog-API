@@ -1,9 +1,12 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-const generateToken = (userId) => {
+const generateToken = (userId, role) => {
     return jwt.sign(
-        {id: userId},
+        {
+            id: userId,
+            role: role
+        },
         process.env.JWT_SECRET,
         {expiresIn: process.env.JWT_EXPIRE || '30d'}
     );
@@ -11,15 +14,15 @@ const generateToken = (userId) => {
 
 // Register User
 exports.register = async (req, res) => {
-    const {username, email, password} = req.body;
+    const {username, email, password, role} = req.body;
 
     const existingUser = await User.findOne({email});
     if (existingUser) {
         throw new Error('Email already in use');
     }
 
-    const user = await User.create({username, email, password});
-    const token = generateToken(user.userId);
+    const user = await User.create({username, email, password, role});
+    const token = generateToken(user.userId, user.role);
 
     res.status(201).json({
         success: true,
@@ -27,7 +30,8 @@ exports.register = async (req, res) => {
         user: {
             id: user.userId,
             username: user.username,
-            email: user.email
+            email: user.email,
+            role: user.role
         }
     });
 };
@@ -50,7 +54,7 @@ exports.login = async (req, res) => {
         throw new Error('Invalid credentials');
     }
 
-    const token = generateToken(user.userId);
+    const token = generateToken(user.userId, user.role);
 
     res.status(200).json({
         success: true,
@@ -58,7 +62,8 @@ exports.login = async (req, res) => {
         user: {
             id: user.userId,
             username: user.username,
-            email: user.email
+            email: user.email,
+            role: user.role
         }
     });
 };

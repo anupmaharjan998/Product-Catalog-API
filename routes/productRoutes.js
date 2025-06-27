@@ -7,17 +7,17 @@ const {
     deleteProduct,
     searchProducts
 } = require('../controllers/productController');
-const {protect} = require("../middleware/auth");
+const {protect, authorizeRoles} = require("../middleware/auth");
 router.use(protect);
 const upload = require('../middleware/upload');
 
 router.route('/',)
-    .post(upload.single('image'), createProduct)
+    .post(authorizeRoles('admin', 'seller'), upload.single('image'), createProduct)
     .get(getAllProducts);
 
 router.route('/:productId')
-    .put(upload.single('image'), updateProduct)
-    .delete(deleteProduct);
+    .put(authorizeRoles('admin', 'seller'), upload.single('image'), updateProduct)
+    .delete(authorizeRoles('admin', 'seller'), deleteProduct);
 
 router.post('/filter', searchProducts);
 
