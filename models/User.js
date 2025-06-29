@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const {v4: uuidv4} = require('uuid');
+const ROLES = require('../utils/roles');
 
 const userSchema = new mongoose.Schema({
     userId: {
@@ -32,7 +33,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'seller', 'customer'],
+        enum: Object.values(ROLES),
         default: 'customer'
     }
 }, {

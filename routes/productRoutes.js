@@ -10,14 +10,15 @@ const {
 const {protect, authorizeRoles} = require("../middleware/auth");
 router.use(protect);
 const upload = require('../middleware/upload');
+const ROLES = require('../utils/roles');
 
 router.route('/',)
-    .post(authorizeRoles('admin', 'seller'), upload.single('image'), createProduct)
+    .post(authorizeRoles(ROLES.ADMIN, ROLES.SELLER), upload.single('image'), createProduct)
     .get(getAllProducts);
 
 router.route('/:productId')
-    .put(authorizeRoles('admin', 'seller'), upload.single('image'), updateProduct)
-    .delete(authorizeRoles('admin', 'seller'), deleteProduct);
+    .put(authorizeRoles(ROLES.ADMIN, ROLES.SELLER), upload.single('image'), updateProduct)
+    .delete(authorizeRoles(ROLES.ADMIN, ROLES.SELLER), deleteProduct);
 
 router.post('/filter', searchProducts);
 

@@ -8,15 +8,16 @@ const {
     searchCategory
 } = require('../controllers/categoryController');
 const { protect, authorizeRoles } = require('../middleware/auth');
+const ROLES = require('../utils/roles');
 router.use(protect);
 
 router.route('/')
-    .post(authorizeRoles('admin', 'seller'), createCategory)
+    .post(authorizeRoles(ROLES.ADMIN, ROLES.SELLER), createCategory)
     .get(getAllCategories);
 
 router.route('/:categoryId')
-    .put(authorizeRoles('admin', 'seller'), updateCategory)
-    .delete(authorizeRoles('admin', 'seller'), deleteCategory);
+    .put(authorizeRoles(ROLES.ADMIN, ROLES.SELLER), updateCategory)
+    .delete(authorizeRoles(ROLES.ADMIN, ROLES.SELLER), deleteCategory);
 
 router.post('/filter', searchCategory);
 
