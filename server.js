@@ -47,7 +47,7 @@ connectDB();
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
-const cartRoutes = require('./routes/CartRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 app.use('/api/categories', categoryRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/auth', authRoutes);
