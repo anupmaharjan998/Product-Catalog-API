@@ -15,9 +15,22 @@ exports.protect = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.user = await User.findOne(decoded.userId).select('-password');
+        req.user = await User.findOne({ userId: decoded.id }).select('-password');
+
         next();
     } catch (err) {
         throw new Error('Not authorized, invalid token');
     }
+};
+
+exports.authorizeRoles = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                message: `Access denied: ${req.user.role} is not authorized`
+            });
+        }
+        next();
+    };
 };
